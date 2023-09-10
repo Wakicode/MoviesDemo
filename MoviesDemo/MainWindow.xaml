@@ -1,0 +1,158 @@
+﻿<Window x:Class="MoviesDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MoviesDemo"
+        mc:Ignorable="d" WindowState="Maximized"
+        Title="FILMOTECA" Height="800" Width="1200" Background="DarkSlateGray" Foreground="White" >
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="TitleStyle">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource TitleStyle}" x:Key="TitleForm">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Foreground" Value="NavajoWhite"/>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource MetroButton}">
+            <Setter Property="Width" Value="70"/>
+            <Setter Property="IsEnabled" Value="{Binding EditIsEnabled}"/>
+            <Setter Property="Margin" Value="10,0"/>
+            <Setter Property="Command" Value="{Binding MovieAction}"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="200*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150*"/>
+            <ColumnDefinition Width="200*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Mis peliculas" FontSize="48" Grid.ColumnSpan="2" Margin="20"/>
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" Margin="10"  VerticalAlignment="Bottom">
+            <ComboBox ItemsSource="{Binding OrderBy}" SelectedItem="{Binding ActionSelected}" FontSize="20" SelectedIndex="0"/>
+            <TextBlock Text="Buscar" Style="{StaticResource TitleStyle}"/>
+            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Margin="0,10" IsEnabled="{Binding SearchIsEnabled}"/>
+
+        </StackPanel>
+            
+        <DataGrid  Grid.Row="1" Grid.Column="0" Margin="10" 
+ItemsSource="{Binding Movies}"  Style="{StaticResource DataGridStyle}"                
+    AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+    CanUserReorderColumns="False" x:Name="gridMovies" SelectionMode="Single" 
+      SelectedIndex="0" SelectedItem="{Binding MovieSelected}">
+            <DataGrid.Columns>
+
+
+                <DataGridTemplateColumn Width="50*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid Background="Transparent" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100*"/>
+                                    <ColumnDefinition Width="50*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding Title}" Grid.Row="0" Grid.Column="0" Style="{StaticResource TitleStyle}"/>
+                                <TextBlock Text="{Binding Year}"  Grid.Row="1" Grid.Column="0" Style="{StaticResource TitleStyle}"/>
+                                <TextBlock Text="{Binding Duration}"  Grid.Row="2" Grid.Column="0" Style="{StaticResource TitleStyle}"/>
+                                <TextBlock Text="{Binding Country}" Grid.Row="3" Grid.Column="0" Style="{StaticResource TitleStyle}"/>
+                                <Image Source="{Binding PosterImage}" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"/>
+                            </Grid>
+
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Bottom" Height="40  ">
+            <Button Content="Añadir" CommandParameter="Add"/>
+            <Button Content="Actualizar" CommandParameter="Edit" />
+            <Button Content="Eliminar" CommandParameter="Delete" />
+        </StackPanel>
+
+        <Grid Grid.Column="1" Grid.Row="1" DataContext="{Binding ElementName=gridMovies, Path=SelectedItem}" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="100*"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="200*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="222*"/>
+                <ColumnDefinition Width="155*"/>
+            </Grid.ColumnDefinitions>
+
+            <Image Source="{Binding UrlPoster}" Grid.Row="0" Grid.Column="2" Grid.RowSpan="5" VerticalAlignment="Top"/>
+            
+            <Separator Grid.Row="0" Grid.Column="2" Grid.RowSpan="4" HorizontalAlignment="Right">
+                <Separator.RenderTransform>
+                    <RotateTransform CenterX="0" CenterY="0" Angle="45" />
+                </Separator.RenderTransform>
+            </Separator>
+
+            <TextBlock Text="Título" Grid.Row="1" Grid.Column="0" Style="{StaticResource TitleForm}"/>
+            <TextBlock Text="{Binding Title}" Grid.Row="1" Grid.Column="1" Style="{StaticResource TitleStyle}"/>
+
+            <TextBlock Text="Año" Grid.Row="2" Grid.Column="0" Style="{StaticResource TitleForm}"/>
+            <TextBlock Text="{Binding Year}" Grid.Row="2" Grid.Column="1" Style="{StaticResource TitleStyle}"/>
+
+            <TextBlock Text="Actores" Grid.Row="3" Grid.Column="0" Style="{StaticResource TitleForm}"/>
+            <TextBlock Text="{Binding Actors}"  Grid.Row="3" Grid.Column="1"  TextWrapping="Wrap" Style="{StaticResource TitleStyle}"/>
+
+            <TextBlock Text="Pais" Grid.Row="4" Grid.Column="0" Style="{StaticResource TitleForm}"/>
+            <TextBlock Text="{Binding Country}" Grid.Row="4" Grid.Column="1" Style="{StaticResource TitleStyle}"/>
+            <!--<TextBox Text="{Binding Country, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Grid.Row="4" Grid.Column="1" />-->
+
+            
+            <ItemsControl ItemsSource="{Binding Path=Images}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate >                        
+                            <Image Source="{Binding}" Margin="5" Height="200"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <ScrollViewer HorizontalScrollBarVisibility="Visible">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate >
+                        <VirtualizingStackPanel Orientation="Horizontal"/>                            
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
+
+        <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" >
+            <StatusBarItem Margin="10,0">
+                <TextBlock Text="Mensajes:"  Foreground="White"/>
+            </StatusBarItem>
+
+            <StatusBarItem Margin="10,0">
+                <ProgressBar Minimum="0" Maximum="100" Value="33" Width="100" Visibility="{Binding ProgressBarIsVisible, Converter={StaticResource b2vc}}"/>
+            </StatusBarItem>           
+            <StatusBarItem Margin="10,0">
+                <TextBlock Text="{Binding Message}"  Foreground="White"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
